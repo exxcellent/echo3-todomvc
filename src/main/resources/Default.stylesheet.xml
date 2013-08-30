@@ -34,7 +34,6 @@
         </p>
     </s>
 
-
     <s n="Completed" t="nextapp.echo.app.TextField" b="TextFieldDefaults">
         <p n="font" t="nextapp.echo.app.Font">
             <f sz="24px" lt="true">
@@ -95,5 +94,40 @@
         <p n="foreground" t="Color">#83756F</p>
     </s>
 
+    <s n="Title" t="nextapp.echo.app.Button" b="ComponentDefaults">
+        <p n="font" t="nextapp.echo.app.Font">
+            <f sz="72px">
+                <tf>Poller One</tf>
+            </f>
+        </p>
+        <p n="foreground" t="Color">#c8c8c8</p>
+        <p n="insets" t="Insets">50px 170px 50px 170px</p>
+    </s>
+
+    <s n="Header" t="nextapp.echo.app.Button" b="ComponentDefaults">
+        <p n="width" t="Extent">100%</p>
+        <p n="height" t="Extent">20px</p>
+        <p n="background" t="Color">#846e64</p>
+    </s>
+
+    <s n="AddTodo" t="nextapp.echo.app.Row" b="ComponentDefaults">
+        <p n="background" t="Color">#f0f0f0</p>
+        <p n="border" t="Border">
+            <b b="1px dotted #000000" l="0px solid #c80000" r="0px solid #c80000" t="0px dotted #000000"/>
+        </p>
+
+    </s>
+
+    <s n="AddTodoText" t="nextapp.echo.app.TextField" b="TextFieldDefaults">
+        <p n="background" t="Color">#f0f0f0</p>
+        <p n="insets" t="Insets">0 0 0 20px</p>
+    </s>
+
+    <s n="TodoItem" t="nextapp.echo.app.Row">
+        <p n="border" t="Border">
+            <b b="1px dotted #000000" l="0px solid #c80000" r="0px solid #c80000" t="0px dotted #000000"/>
+        </p>
+        <p n="background" t="Color">#ffffff</p>
+    </s>
 
 </ss>

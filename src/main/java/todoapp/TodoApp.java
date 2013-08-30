@@ -23,11 +23,16 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
     List<TodoItem> items = new ArrayList<TodoItem>();
 
     public static final StyleSheet DEFAULT_STYLE_SHEET;
+    public static final ImageReference BACKGROUND_IMAGE;
+
     static {
         try {
             DEFAULT_STYLE_SHEET = StyleSheetLoader.load(
                     "/Default.stylesheet.xml",
                     Thread.currentThread().getContextClassLoader());
+
+            BACKGROUND_IMAGE = new ResourceImageReference("/bg.png");
+
         } catch (SerialException ex) {
             throw new RuntimeException(ex);
         }
@@ -89,6 +94,7 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
             while (it.hasNext()) {
                 if (it.next().isCompleted()) it.remove();
             }
+            checkAll.setSelected(false);
         }
         updateGUI();
     }
@@ -153,28 +159,20 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
         contentGrid.setWidth(new Extent(600, Extent.PX));
 
         Button title = new Button("todos");
-        title.setForeground(new Color(200,200,200));
-        title.setInsets(new Insets(180,50,0,50));
-        title.setFont(new Font(new Font.Typeface("Helvetica Neue", null), Font.PLAIN, new Extent(72,Extent.PX) ));
+        title.setStyleName("Title");
         contentGrid.add(title);
 
         Button header = new Button();
-        header.setWidth(new Extent(100, Extent.PERCENT));
-        header.setHeight(new Extent(20, Extent.PX));
-        header.setBackground(new Color(132, 110, 100));
+        header.setStyleName("Header");
         contentGrid.add(header);
 
         ContentPane contentPane = new ContentPane();
         Row addTodoRow = new Row();
         addTodoRow.add(checkAll);
-        addTodoRow.setBackground(new Color(240, 240, 240));
-        addTodoText.setBackground(new Color(240, 240, 240));
-        addTodoText.setInsets(new Insets(10, 0, 0, 0));
-        addTodoRow.setBorder(new Border(new Border.Side[]{
-                new Border.Side(0, Color.BLACK, Border.STYLE_DOTTED),
-                new Border.Side(0, Color.BLACK, Border.STYLE_DOTTED),
-                new Border.Side(1, Color.BLACK, Border.STYLE_DOTTED),
-                new Border.Side(0, Color.BLACK, Border.STYLE_DOTTED)}));
+        addTodoRow.setStyleName("AddTodo");
+        addTodoText.setStyleName("AddTodoText");
+        addTodoText.setWidth(new Extent(550, Extent.PX));
+
         checkAll.setInsets(new Insets(0, 10, 20, 10));
         checkAll.setStyleName("CheckBox");
 
@@ -204,12 +202,10 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
         controlVis.add(btnActive);
         controlVis.add(btnCompleted);
         controlsGrid.add(controlVis);
-
         controlsGrid.add(btnClearCompleted);
 
-        addTodoText.setWidth(new Extent(550, Extent.PX));
+
         itemsLeft.setStyleName("ItemsLeft");
-        addTodoText.setStyleName("Default");
         btnAll.setStyleName("Selected");
         btnActive.setStyleName("Default");
         btnCompleted.setStyleName("Default");
@@ -231,6 +227,7 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
         pageGrid.setColumnWidth(2, new Extent(34, Extent.PERCENT));
 
         contentPane.add(pageGrid);
+        contentPane.setBackgroundImage(new FillImage(BACKGROUND_IMAGE));
         return contentPane;
     }
 }

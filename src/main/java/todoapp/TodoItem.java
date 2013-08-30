@@ -18,18 +18,14 @@ public class TodoItem extends Observable implements ActionListener {
         this.text.setStyleName("Default");
         btnDelete.setStyleName("DeleteButton");
         checkBox.setStyleName("CheckBox");
+        row.setStyleName("TodoItem");
         row.add(checkBox);
         checkBox.setInsets(new Insets(0, 10, 20, 10));
-        row.setBorder(new Border(new Border.Side[] {
-                new Border.Side(0, Color.BLACK, Border.STYLE_DOTTED),
-                new Border.Side(0, Color.BLACK, Border.STYLE_DOTTED),
-                new Border.Side(1, Color.BLACK, Border.STYLE_DOTTED),
-                new Border.Side(0, Color.BLACK, Border.STYLE_DOTTED)}));
         btnDelete.addActionListener(this);
         checkBox.addActionListener(this);
         this.text.setText(text);
-        this.text.setWidth(new Extent(550, Extent.PX));
-        this.text.setInsets(new Insets(10, 0, 0, 0));
+        this.text.setWidth(new Extent(535, Extent.PX));
+        this.text.setInsets(new Insets(20, 0, 0, 0));
         row.add(this.text);
         row.add(btnDelete);
     }
