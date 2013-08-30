@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ss>
+    <s n="ComponentDefaults" t="nextapp.echo.app.Component">
+        <p n="font" t="nextapp.echo.app.Font">
+            <f sz="24px">
+                <tf>Helvetica Neue</tf>
+                <tf>Helvetica</tf>
+                <tf>Verdana</tf>
+                <tf>Sans-Serif</tf>
+            </f>
+        </p>
+
+    </s>
+
+    <s n="Default" t="nextapp.echo.app.Component" b="ComponentDefaults">
+
+    </s>
+
+    <s n="TextFieldDefaults" t="nextapp.echo.app.TextField" b="ComponentDefaults">
+        <p n="border" t="Border">
+            <b b="0px solid #000000" l="0px solid #000000" r="0px solid #000000" t="0px solid #000000"/>
+        </p>
+        <p n="foreground" t="Color">#4D4D4D</p>
+    </s>
+
+    <s n="Default" t="nextapp.echo.app.TextField" b="TextFieldDefaults">
+
+    </s>
+
+    <s n="CheckBox" t="nextapp.echo.app.CheckBox">
+        <p n="border" t="Border">
+            <b b="0px solid #c80000" l="0px solid #c80000" r="1px solid #c80000" t="0px solid #c80000"/>
+        </p>
+    </s>
+
+
+    <s n="Completed" t="nextapp.echo.app.TextField" b="TextFieldDefaults">
+        <p n="font" t="nextapp.echo.app.Font">
+            <f sz="24px" lt="true">
+                <tf>Helvetica Neue</tf>
+                <tf>Helvetica</tf>
+                <tf>Verdana</tf>
+                <tf>Sans-Serif</tf>
+            </f>
+        </p>
+        <p n="foreground" t="Color">#A9A9A9</p>
+    </s>
+
+    <s n="Default" t="nextapp.echo.app.Button" b="ComponentDefaults">
+        <p n="font" t="nextapp.echo.app.Font">
+            <f sz="14px">
+                <tf>Helvetica Neue</tf>
+                <tf>Helvetica</tf>
+                <tf>Verdana</tf>
+                <tf>Sans-Serif</tf>
+            </f>
+        </p>
+        <p n="foreground" t="Color">#83756F</p>
+    </s>
+
+    <s n="Selected" t="nextapp.echo.app.Button" b="ComponentDefaults">
+        <p n="font" t="nextapp.echo.app.Font">
+            <f sz="14px" bo="true">
+                <tf>Helvetica Neue</tf>
+                <tf>Helvetica</tf>
+                <tf>Verdana</tf>
+                <tf>Sans-Serif</tf>
+            </f>
+        </p>
+        <p n="foreground" t="Color">#83756F</p>
+    </s>
+
+    <s n="ItemsLeft" t="nextapp.echo.app.Label">
+        <p n="font" t="nextapp.echo.app.Font">
+            <f sz="14px">
+                <tf>Helvetica Neue</tf>
+                <tf>Helvetica</tf>
+                <tf>Verdana</tf>
+                <tf>Sans-Serif</tf>
+            </f>
+        </p>
+        <p n="foreground" t="Color">#83756F</p>
+    </s>
+
+    <s n="DeleteButton" t="nextapp.echo.app.Button" b="ComponentDefaults">
+        <p n="font" t="nextapp.echo.app.Font">
+            <f sz="20px" bo="true">
+                <tf>Helvetica Neue</tf>
+                <tf>Helvetica</tf>
+                <tf>Verdana</tf>
+                <tf>Sans-Serif</tf>
+            </f>
+        </p>
+        <p n="foreground" t="Color">#83756F</p>
+    </s>
+
+
+</ss>
