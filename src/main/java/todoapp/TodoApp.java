@@ -1,48 +1,42 @@
 package todoapp;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import nextapp.echo.app.*;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.StyleSheetLoader;
 
-import java.util.*;
-
 public class TodoApp extends ApplicationInstance implements ActionListener, Observer {
+
     private Grid todoGrid = new Grid();
     private TextField addTodoText = new TextField();
     private Label itemsLeft = new Label();
     private CheckBox checkAll = new CheckBox();
-    private Button btnAll = new Button("All");
-    private Button btnActive = new Button("Active");
-    private Button btnCompleted = new Button("Completed");
-    private Button btnClearCompleted = new Button();
+    private Button buttonAll = new Button("All");
+    private Button buttonActive = new Button("Active");
+    private Button buttonCompleted = new Button("Completed");
+    private Button buttonClearCompleted = new Button();
     private Grid controlsGrid = new Grid();
     private Column container = new Column();
+    private List<TodoItem> items = new ArrayList<>();
 
-    List<TodoItem> items = new ArrayList<TodoItem>();
+    private Visibility visibility = Visibility.ALL;
 
-    public static final StyleSheet DEFAULT_STYLE_SHEET;
-    public static final ImageReference BACKGROUND_IMAGE;
+    private static final StyleSheet DEFAULT_STYLE_SHEET;
+    private static final ImageReference BACKGROUND_IMAGE = new ResourceImageReference("/bg.png");
 
     static {
         try {
-            DEFAULT_STYLE_SHEET = StyleSheetLoader.load(
-                    "/Default.stylesheet.xml",
-                    Thread.currentThread().getContextClassLoader());
-
-            BACKGROUND_IMAGE = new ResourceImageReference("/bg.png");
-
+            DEFAULT_STYLE_SHEET = StyleSheetLoader.load("/Default.stylesheet.xml", Thread.currentThread().getContextClassLoader());
         } catch (SerialException ex) {
             throw new RuntimeException(ex);
         }
     }
-
-    enum VISIBILITY {
-        ALL, ACTIVE, COMPLETED;
-    }
-
-    VISIBILITY visibility = VISIBILITY.ALL;
 
     @Override
     public Window init() {
@@ -83,16 +77,18 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        if (actionEvent.getSource() == btnAll) {
-            visibility = VISIBILITY.ALL;
-        } else if (actionEvent.getSource() == btnCompleted) {
-            visibility = VISIBILITY.COMPLETED;
-        } else if (actionEvent.getSource() == btnActive) {
-            visibility = VISIBILITY.ACTIVE;
-        } else if (actionEvent.getSource() == btnClearCompleted) {
+        if (actionEvent.getSource() == buttonAll) {
+            visibility = Visibility.ALL;
+        } else if (actionEvent.getSource() == buttonCompleted) {
+            visibility = Visibility.COMPLETED;
+        } else if (actionEvent.getSource() == buttonActive) {
+            visibility = Visibility.ACTIVE;
+        } else if (actionEvent.getSource() == buttonClearCompleted) {
             Iterator<TodoItem> it = items.iterator();
             while (it.hasNext()) {
-                if (it.next().isCompleted()) it.remove();
+                if (it.next().isCompleted()) {
+                    it.remove();
+                }
             }
             checkAll.setSelected(false);
         }
@@ -108,26 +104,28 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
     }
 
     private void updateGUI() {
-        btnAll.setStyleName("Default");
-        btnCompleted.setStyleName("Default");
-        btnActive.setStyleName("Default");
-        if (visibility == VISIBILITY.ALL) {
-            btnAll.setStyleName("Selected");
-        } else if (visibility == VISIBILITY.ACTIVE) {
-            btnActive.setStyleName("Selected");
+        buttonAll.setStyleName("Default");
+        buttonCompleted.setStyleName("Default");
+        buttonActive.setStyleName("Default");
+        if (visibility == Visibility.ALL) {
+            buttonAll.setStyleName("Selected");
+        } else if (visibility == Visibility.ACTIVE) {
+            buttonActive.setStyleName("Selected");
         } else {
-            btnCompleted.setStyleName("Selected");
+            buttonCompleted.setStyleName("Selected");
         }
 
         todoGrid.removeAll();
         int completed = 0;
-        for (TodoItem item: items) {
-            if (item.isCompleted()) completed += 1;
+        for (TodoItem item : items) {
+            if (item.isCompleted()) {
+                completed += 1;
+            }
 
-            if (visibility == VISIBILITY.ALL || (visibility == VISIBILITY.COMPLETED && item.isCompleted())) {
-                todoGrid.add(item.getGui());
-            } else if (visibility == VISIBILITY.ACTIVE && !item.isCompleted()) {
-                todoGrid.add(item.getGui());
+            if (visibility == Visibility.ALL || (visibility == Visibility.COMPLETED && item.isCompleted())) {
+                todoGrid.add(item.getUI());
+            } else if (visibility == Visibility.ACTIVE && !item.isCompleted()) {
+                todoGrid.add(item.getUI());
             }
         }
 
@@ -138,13 +136,13 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
         }
 
         if (completed > 0) {
-            btnClearCompleted.setText("Clear completed ("+ completed +")");
+            buttonClearCompleted.setText("Clear completed (" + completed + ")");
         } else {
-            btnClearCompleted.setText("");
+            buttonClearCompleted.setText("");
         }
 
         int toBeDone = items.size() - completed;
-        itemsLeft.setText(toBeDone + " item" + (toBeDone == 1 ? "" : "s") +  " left");
+        itemsLeft.setText(toBeDone + " item" + (toBeDone == 1 ? "" : "s") + " left");
     }
 
 
@@ -158,7 +156,7 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
         contentGrid.setOrientation(Grid.ORIENTATION_HORIZONTAL);
         contentGrid.setWidth(new Extent(600, Extent.PX));
 
-        Button title = new Button("todos");
+        Label title = new Label("todos");
         title.setStyleName("Title");
         contentGrid.add(title);
 
@@ -171,10 +169,8 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
         addTodoRow.add(checkAll);
         addTodoRow.setStyleName("AddTodo");
         addTodoText.setStyleName("AddTodoText");
-        addTodoText.setWidth(new Extent(550, Extent.PX));
 
-        checkAll.setInsets(new Insets(0, 10, 20, 10));
-        checkAll.setStyleName("CheckBox");
+        checkAll.setStyleName("TodoItemCheckBox");
 
         addTodoRow.add(addTodoText);
 
@@ -192,29 +188,29 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
         controlsGrid.setBackground(new Color(240, 240, 240));
         controlsGrid.setWidth(new Extent(100, Extent.PERCENT));
 
-        controlsGrid.setInsets(new Insets(10,2,2,2));
+        controlsGrid.setInsets(new Insets(10, 2, 2, 2));
         controlsGrid.add(itemsLeft);
         Row controlVis = new Row();
-        btnAll.setInsets(new Insets(5,5,5,5));
-        btnActive.setInsets(new Insets(5,5,5,5));
-        btnCompleted.setInsets(new Insets(5,5,5,5));
-        controlVis.add(btnAll);
-        controlVis.add(btnActive);
-        controlVis.add(btnCompleted);
+        buttonAll.setInsets(new Insets(5, 5, 5, 5));
+        buttonActive.setInsets(new Insets(5, 5, 5, 5));
+        buttonCompleted.setInsets(new Insets(5, 5, 5, 5));
+        controlVis.add(buttonAll);
+        controlVis.add(buttonActive);
+        controlVis.add(buttonCompleted);
         controlsGrid.add(controlVis);
-        controlsGrid.add(btnClearCompleted);
+        controlsGrid.add(buttonClearCompleted);
 
 
         itemsLeft.setStyleName("ItemsLeft");
-        btnAll.setStyleName("Selected");
-        btnActive.setStyleName("Default");
-        btnCompleted.setStyleName("Default");
-        btnClearCompleted.setStyleName("Default");
+        buttonAll.setStyleName("Selected");
+        buttonActive.setStyleName("Default");
+        buttonCompleted.setStyleName("Default");
+        buttonClearCompleted.setStyleName("Default");
 
-        btnAll.addActionListener(this);
-        btnActive.addActionListener(this);
-        btnCompleted.addActionListener(this);
-        btnClearCompleted.addActionListener(this);
+        buttonAll.addActionListener(this);
+        buttonActive.addActionListener(this);
+        buttonCompleted.addActionListener(this);
+        buttonClearCompleted.addActionListener(this);
 
         contentGrid.add(container);
 
@@ -230,4 +226,9 @@ public class TodoApp extends ApplicationInstance implements ActionListener, Obse
         contentPane.setBackgroundImage(new FillImage(BACKGROUND_IMAGE));
         return contentPane;
     }
+
+    enum Visibility {
+        ALL, ACTIVE, COMPLETED
+    }
+
 }
