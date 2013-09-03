@@ -1,61 +1,39 @@
 package todoapp;
 
 import java.util.Observable;
-import nextapp.echo.app.Button;
-import nextapp.echo.app.CheckBox;
-import nextapp.echo.app.Component;
-import nextapp.echo.app.Row;
-import nextapp.echo.app.TextField;
-import nextapp.echo.app.event.ActionEvent;
-import nextapp.echo.app.event.ActionListener;
 
-public class TodoItem extends Observable implements ActionListener {
+public class TodoItem extends Observable {
 
-    private CheckBox checkBox = new CheckBox();
-    private TextField textField = new TextField();
-    private Row row = new Row();
-    private Button deleteButton = new Button("✖");
     private boolean completed;
+    private String text;
 
     public TodoItem(String text) {
-        // assign style names
-        textField.setStyleName("TodoTextField");
-        deleteButton.setStyleName("DeleteButton");
-        checkBox.setStyleName("TodoItemCheckBox");
-        row.setStyleName("TodoItem");
-
-        deleteButton.addActionListener(this);
-        checkBox.addActionListener(this);
-
-        textField.setText(text);
-
-        row.add(checkBox);
-        row.add(this.textField);
-        row.add(deleteButton);
+        this.text = text;
+        this.completed = false;
     }
 
-    public Component getUI() {
-        return this.row;
+    public String getText() {
+        return text;
     }
 
-    public boolean isCompleted() {
-        return this.checkBox.isSelected();
-    }
-
-    public void setCompleted(boolean completed) {
-        this.textField.setStyleName(completed ? "TodoTextFieldCompleted" : "TodoTextField");
-        this.checkBox.setSelected(completed);
+    public void setText(String text) {
+        this.text = text;
         setChanged();
         notifyObservers();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        if (actionEvent.getSource() == this.checkBox) {
-            setCompleted(this.checkBox.isSelected());
-        } else if (actionEvent.getSource() == this.deleteButton) {
-            setChanged();
-            notifyObservers("deleted");
-        }
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+        setChanged();
+        notifyObservers();
+    }
+
+    public void delete() {
+        setChanged();
+        notifyObservers("deleted");
     }
 }
