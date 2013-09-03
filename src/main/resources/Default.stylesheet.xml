@@ -19,6 +19,11 @@
 
     <s n="Default" t="nextapp.echo.app.Component" b="ComponentDefaults"></s>
 
+
+    <s n="FullWidth" t="nextapp.echo.app.Component" b="ComponentDefaults">
+        <p n="width" t="Extent">100%</p>
+    </s>
+
     <!-- ~~~ Todo Elements ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
     <s n="TodoItemCheckBox" t="nextapp.echo.app.CheckBox">

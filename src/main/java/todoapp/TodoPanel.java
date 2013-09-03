@@ -2,6 +2,7 @@ package todoapp;
 
 import java.util.Observable;
 import java.util.Observer;
+import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.CheckBox;
 import nextapp.echo.app.Color;
@@ -17,114 +18,109 @@ import nextapp.echo.app.Row;
 import nextapp.echo.app.TextField;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+import nextapp.echo.app.layout.GridLayoutData;
 import static todoapp.Visibility.*;
 
-public class TodoPanel extends ContentPane  {
+public class TodoPanel extends ContentPane implements Observer  {
 
-    private final Grid todoGrid = new Grid();
+    private final Grid todoGrid = new Grid(1);
     private final TextField addTodoField = new TextField();
     private final Label itemsLeft = new Label();
     private final CheckBox checkAll = new CheckBox();
     private final Button buttonAll = new Button("All");
     private final Button buttonActive = new Button("Active");
     private final Button buttonCompleted = new Button("Completed");
-    private final Button buttonClearCompleted = new Button();
-    private final Grid controlsGrid = new Grid();
-    private final Column container = new Column();
+    private final Button buttonClear = new Button("Clear (x) completed");
+    private final Grid controlsGrid = new Grid(3);
 
-    private final TodoActions listener = new TodoActions();
     private final TodoList model;
 
     private Visibility visibility = ALL;
 
     public TodoPanel(TodoList model) {
+        // Save model
         this.model = model;
-        this.model.addObserver(new Observer() {
-            @Override
-            public void update(Observable o, Object arg) {
-                updateUI();
-            }
-        });
+        this.model.addObserver(this);
 
-        Grid pageGrid = new Grid();
-        pageGrid.setSize(3);
-        pageGrid.setOrientation(Grid.ORIENTATION_HORIZONTAL);
+        // Assign event listener
+        TodoActions listener = new TodoActions();
+        buttonAll.addActionListener(listener);
+        buttonActive.addActionListener(listener);
+        buttonCompleted.addActionListener(listener);
+        buttonClear.addActionListener(listener);
+        checkAll.addActionListener(listener);
+        addTodoField.addActionListener(listener);
 
-        Grid contentGrid = new Grid();
-        contentGrid.setSize(1);
-        contentGrid.setOrientation(Grid.ORIENTATION_HORIZONTAL);
-        contentGrid.setWidth(new Extent(600, Extent.PX));
-
-        Label title = new Label("todos");
-        title.setStyleName("Title");
-        contentGrid.add(title);
-
-        Button header = new Button();
-        header.setStyleName("Header");
-        contentGrid.add(header);
-
-        Row addTodoRow = new Row();
-        addTodoRow.add(checkAll);
-        addTodoRow.setStyleName("AddTodo");
+        // Assign styles
         addTodoField.setStyleName("AddTodoText");
-
         checkAll.setStyleName("TodoItemCheckBox");
-
-        addTodoRow.add(addTodoField);
-
-        container.add(addTodoRow);
-        container.add(todoGrid);
-        todoGrid.setOrientation(Grid.ORIENTATION_HORIZONTAL);
-        todoGrid.setSize(1);
-        todoGrid.setWidth(new Extent(100, Extent.PERCENT));
-
-
-        controlsGrid.setOrientation(Grid.ORIENTATION_HORIZONTAL);
-        controlsGrid.setSize(3);
-        controlsGrid.setColumnWidth(0, new Extent(33, Extent.PERCENT));
-        controlsGrid.setColumnWidth(1, new Extent(33, Extent.PERCENT));
-        controlsGrid.setColumnWidth(2, new Extent(34, Extent.PERCENT));
-        controlsGrid.setBackground(new Color(240, 240, 240));
-        controlsGrid.setWidth(new Extent(100, Extent.PERCENT));
-
-        controlsGrid.setInsets(new Insets(10, 2, 2, 2));
-        controlsGrid.add(itemsLeft);
-        Row controlVis = new Row();
-        buttonAll.setInsets(new Insets(5, 5, 5, 5));
-        buttonActive.setInsets(new Insets(5, 5, 5, 5));
-        buttonCompleted.setInsets(new Insets(5, 5, 5, 5));
-        controlVis.add(buttonAll);
-        controlVis.add(buttonActive);
-        controlVis.add(buttonCompleted);
-        controlsGrid.add(controlVis);
-        controlsGrid.add(buttonClearCompleted);
-
-
         itemsLeft.setStyleName("ItemsLeft");
         buttonAll.setStyleName("Selected");
         buttonActive.setStyleName("Default");
         buttonCompleted.setStyleName("Default");
-        buttonClearCompleted.setStyleName("Default");
+        buttonClear.setStyleName("Default");
+        todoGrid.setStyleName("FullWidth");
 
-        buttonAll.addActionListener(listener);
-        buttonActive.addActionListener(listener);
-        buttonCompleted.addActionListener(listener);
-        buttonClearCompleted.addActionListener(listener);
-        checkAll.addActionListener(listener);
-        addTodoField.addActionListener(listener);
+        // set background image
+        this.setBackgroundImage(new FillImage(new ResourceImageReference("/bg.png")));
 
+
+        // Add layout grid and define background
+        this.add(buildLayout());
+    }
+
+    private Grid buildLayout() {
+        // Build header et al.
+        Label title = new Label("todos");
+        title.setStyleName("Title");
+
+        Button header = new Button();
+        header.setStyleName("Header");
+
+        Row newTodoRow = new Row();
+        newTodoRow.setStyleName("AddTodo");
+        newTodoRow.add(checkAll);
+        newTodoRow.add(addTodoField);
+
+        Column container = new Column();
+        container.add(newTodoRow);
+        container.add(todoGrid);
+
+        GridLayoutData gridCenter = new GridLayoutData();
+        gridCenter.setAlignment(Alignment.ALIGN_CENTER);
+
+        Row filterControls = new Row();
+        filterControls.setCellSpacing(new Extent(10));
+        filterControls.add(buttonAll);
+        filterControls.add(buttonActive);
+        filterControls.add(buttonCompleted);
+        filterControls.setLayoutData(gridCenter);
+
+        controlsGrid.setColumnWidth(0, new Extent(30, Extent.PERCENT));
+        controlsGrid.setColumnWidth(1, new Extent(40, Extent.PERCENT));
+        controlsGrid.setColumnWidth(2, new Extent(30, Extent.PERCENT));
+        controlsGrid.setBackground(new Color(240, 240, 240));
+        controlsGrid.setWidth(new Extent(100, Extent.PERCENT));
+        controlsGrid.setInsets(new Insets(10, 2, 10, 2));
+
+        controlsGrid.add(itemsLeft);
+        controlsGrid.add(filterControls);
+        controlsGrid.add(buttonClear);
+
+        Grid contentGrid = new Grid(1);
+        contentGrid.setWidth(new Extent(600, Extent.PX));
+        contentGrid.add(title);
+        contentGrid.add(header);
         contentGrid.add(container);
 
+        // Make a 100% sized grid and add the content centered in it
+        Grid pageGrid = new Grid();
         pageGrid.setWidth(new Extent(100, Extent.PERCENT));
-        pageGrid.add(new Label());
-        pageGrid.add(contentGrid);
-        pageGrid.add(new Label());
-        pageGrid.setColumnWidth(0, new Extent(33, Extent.PERCENT));
-        pageGrid.setColumnWidth(1, new Extent(33, Extent.PERCENT));
-        pageGrid.setColumnWidth(2, new Extent(34, Extent.PERCENT));
 
-        add(pageGrid);
-        setBackgroundImage(new FillImage(new ResourceImageReference("/bg.png")));
+        contentGrid.setLayoutData(gridCenter);
+
+        pageGrid.add(contentGrid);
+        return pageGrid;
     }
 
     private void updateUI() {
@@ -133,33 +129,34 @@ public class TodoPanel extends ContentPane  {
         buttonCompleted.setStyleName(visibility == COMPLETED ? "Selected" : "Default");
         buttonActive.setStyleName(visibility == ACTIVE ? "Selected" : "Default");
 
+        controlsGrid.setVisible(!model.getItems().isEmpty());
 
         // Rebuild list
         todoGrid.removeAll();
         int completionCount = 0;
         for (TodoItem item : model.getItems()) {
-            boolean completed = item.isCompleted();
-            completionCount += completed ? 1 : 0;
+            completionCount += item.isCompleted() ? 1 : 0;
             TodoRow todoRow = new TodoRow(item);
 
-            if (visibility == ALL || (visibility == COMPLETED && completed) || (visibility == ACTIVE && !completed)) {
+            if (visibility == ALL
+                    || (visibility == COMPLETED && item.isCompleted())
+                    || (visibility == ACTIVE && !item.isCompleted())) {
                 todoGrid.add(todoRow);
             }
 
         }
-
         todoGrid.add(controlsGrid);
-        controlsGrid.setVisible(!model.getItems().isEmpty());
 
-        if (completionCount > 0) {
-            buttonClearCompleted.setText("Clear completed (" + completionCount + ")");
-        } else {
-            buttonClearCompleted.setText("");
-        }
+        //  Update texts
         int toBeDone = model.getItems().size() - completionCount;
+        buttonClear.setText(completionCount > 0 ? "Clear completed (" + completionCount + ")" : "");
         itemsLeft.setText(toBeDone + " item" + (toBeDone == 1 ? "" : "s") + " left");
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        updateUI();
+    }
 
     private class TodoActions implements ActionListener {
         @Override
@@ -171,7 +168,7 @@ public class TodoPanel extends ContentPane  {
                 visibility = COMPLETED;
             } else if (eventSource == buttonActive) {
                 visibility = ACTIVE;
-            } else if (eventSource == buttonClearCompleted) {
+            } else if (eventSource == buttonClear) {
                 model.clearAll();
                 checkAll.setSelected(false);
             } else if (eventSource == checkAll) {
@@ -188,7 +185,6 @@ public class TodoPanel extends ContentPane  {
 
             updateUI();
         }
-
     }
 
 }
