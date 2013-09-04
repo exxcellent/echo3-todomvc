@@ -43,7 +43,7 @@ public class TodoPanel extends ContentPane implements Observer  {
         this.model.addObserver(this);
 
         // Assign event listener
-        TodoActions listener = new TodoActions();
+        ActionListener listener = new TodoActions();
         buttonAll.addActionListener(listener);
         buttonActive.addActionListener(listener);
         buttonCompleted.addActionListener(listener);
@@ -63,7 +63,6 @@ public class TodoPanel extends ContentPane implements Observer  {
 
         // set background image
         this.setBackgroundImage(new FillImage(new ResourceImageReference("/bg.png")));
-
 
         // Add layout grid and define background
         this.add(buildLayout());

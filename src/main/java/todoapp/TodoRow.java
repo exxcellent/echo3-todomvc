@@ -27,6 +27,7 @@ public class TodoRow extends Row implements ActionListener {
 
         deleteButton.addActionListener(this);
         checkBox.addActionListener(this);
+        textField.addActionListener(this);
 
         add(checkBox);
         add(this.textField);
@@ -41,12 +42,18 @@ public class TodoRow extends Row implements ActionListener {
         this.checkBox.setSelected(model.isCompleted());
     }
 
+    private void onViewUpdate() {
+        this.model.setText(this.textField.getText());
+    }
+
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         if (actionEvent.getSource() == this.checkBox) {
             model.setCompleted(this.checkBox.isSelected());
         } else if (actionEvent.getSource() == this.deleteButton) {
             model.delete();
+        } else if (actionEvent.getSource() == this.textField) {
+            onViewUpdate();
         }
     }
 
